@@ -27,18 +27,20 @@
 
 namespace vk_com_api
 {
+    __declspec(selectany) extern const char * version = "1.0";
+
+
     typedef pfc::rcptr_t<pfc::array_t<t_uint8>> membuf_ptr;
 
-
     enum
-    { 
+    {
         // Not sure if this is a right value for desktop apps
         // In practice call rate is about 0.75 api calls per second
         max_api_calls_per_second = 3,
 
         max_mp3_file_size = 21 * 1024 * 1024 // Limit for mp3 file upload
-    }; 
-    
+    };
+
     class NOVTABLE vk_api_provider : public service_base
     {
         FB2K_MAKE_SERVICE_INTERFACE_ENTRYPOINT(vk_api_provider)
