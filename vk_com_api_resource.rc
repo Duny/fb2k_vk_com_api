@@ -1,0 +1,82 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "vk_com_api_resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Русский (Россия) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
+LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
+#pragma code_page(1251)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_LOGIN, DIALOG
+    BEGIN
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_LOGIN DIALOGEX 0, 0, 395, 237
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Login to vk.com"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_IE,"{8856F961-340A-11D0-A96B-00C04FD705A2}",0x0,0,0,399,237
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_LOGIN DLGINIT
+BEGIN
+    IDC_IE, 0x376, 160, 0
+0x0000, 0x0000, 0x004c, 0x0000, 0x3de9, 0x0000, 0x27ca, 0x0000, 0x0000,
+0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+0x0000, 0x0000, 0x004c, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0001,
+0x0000, 0xd0e0, 0x0057, 0x3573, 0x11cf, 0x69ae, 0x0008, 0x2e2b, 0x6212,
+0x0002, 0x0000, 0x0000, 0x0000, 0x004c, 0x0000, 0x1401, 0x0002, 0x0000,
+0x0000, 0x00c0, 0x0000, 0x0000, 0x4600, 0x0080, 0x0000, 0x0000, 0x0000,
+0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0001, 0x0000,
+0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+    0
+END
+
+#endif    // Русский (Россия) resources
+/////////////////////////////////////////////////////////////////////////////
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
