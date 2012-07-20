@@ -15,4 +15,6 @@ namespace vk_com_api { namespace externals
     extern const char * auth_browser_dlg_caption_prefix;
 
     extern const char * vk_api_application_id;
+
+    extern const char * component_name_for_console_log;
 }}

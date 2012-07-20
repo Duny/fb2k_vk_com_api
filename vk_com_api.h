@@ -6,7 +6,18 @@
 #include "boost/tuple/tuple.hpp"
 #include "boost/tuple/tuple_comparison.hpp"
 
+// crt includes
+#include <tuple>
+#include <functional>
+#include <algorithm>
 
+// foobar2000 includes
+#include "foobar2000/ATLHelpers/ATLHelpers.h"
+#include <exdispid.h>
+#include <atlframe.h>
+
+
+// vk_com_api additional headers
 #include "vk_com_api_external.h" // Externals symbols from this file must be defined
 #include "vk_com_api_helpers.h"
 #include "vk_com_api_auth.h"

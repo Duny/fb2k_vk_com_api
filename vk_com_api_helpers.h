@@ -123,11 +123,11 @@ namespace vk_com_api
     // Console logging helpers
     struct error_log : public pfc::string_formatter
     {
-        ~error_log () { if (!is_empty()) console::formatter () << "Error("COMPONENT_NAME"):" << get_ptr (); }
+        ~error_log () { if (!is_empty()) console::formatter () << "Error(" << externals::component_name_for_console_log << "):" << get_ptr (); }
     };
 
     struct debug_log : public pfc::string_formatter
     {
-        ~debug_log () { if (!is_empty ()) console::formatter () << "Debug("COMPONENT_NAME"):" << get_ptr (); }
+        ~debug_log () { if (!is_empty ()) console::formatter () << "Debug(" << externals::component_name_for_console_log <<"):" << get_ptr (); }
     };
 }

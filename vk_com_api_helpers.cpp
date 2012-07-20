@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "vk_com_api.h"
 
 namespace vk_com_api

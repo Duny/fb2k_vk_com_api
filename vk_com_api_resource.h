@@ -1,6 +1,6 @@
 // Used by vk_com_api.rc
 //
-#define IDD_LOGIN                       106
-#define IDC_IE                          1039
+#define IDD_VK_COM_API_LOGIN_DLG         1500
+#define IDC_VK_COM_API_LOGIN_DLG_IE_CTRL 1501
 
 // file must end with \n

@@ -6,21 +6,20 @@ namespace vk_com_api
     class browser_dialog :
         public CAxDialogImpl<browser_dialog>,
         public CDialogResize<browser_dialog>,
-        public IDispEventImpl<IDC_IE, browser_dialog>
+        public IDispEventImpl<IDC_VK_COM_API_LOGIN_DLG_IE_CTRL, browser_dialog>
     {
     public:
-        enum { IDD = IDD_LOGIN };
+        enum { IDD = IDD_VK_COM_API_LOGIN_DLG };
 
         typedef std::function<void (browser_dialog *p_dlg)> on_navigate_complete_callback;
 
 
-        browser_dialog (const char * p_title, const char * p_url, const on_navigate_complete_callback & p_callback)
-            : m_title (p_title), m_inital_location (p_url), m_callback (p_callback) {}
+        browser_dialog (const char * p_title, const char * p_url, const on_navigate_complete_callback & p_callback);
 
 
-        void show () { DoModal (core_api::get_main_window ()); }
+        void show ();
 
-        void navigate (const char * url) { m_current_location.reset (); if (m_wb2) m_wb2->Navigate (CComBSTR (url), nullptr, nullptr, nullptr, nullptr); }
+        void navigate (const char * url);
         const pfc::string_base & get_browser_location () const { return m_current_location; }
 
     private:
@@ -33,11 +32,11 @@ namespace vk_com_api
         END_MSG_MAP()
 
         BEGIN_SINK_MAP(browser_dialog)
-            SINK_ENTRY(IDC_IE, DISPID_NAVIGATECOMPLETE2, on_navigate_complete2)
+            SINK_ENTRY(IDC_VK_COM_API_LOGIN_DLG_IE_CTRL, DISPID_NAVIGATECOMPLETE2, on_navigate_complete2)
         END_SINK_MAP()
 
         BEGIN_DLGRESIZE_MAP(browser_dialog)
-            DLGRESIZE_CONTROL(IDC_IE, DLSZ_SIZE_X | DLSZ_SIZE_Y)
+            DLGRESIZE_CONTROL(IDC_VK_COM_API_LOGIN_DLG_IE_CTRL, DLSZ_SIZE_X | DLSZ_SIZE_Y)
         END_DLGRESIZE_MAP()
 
 

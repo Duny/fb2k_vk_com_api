@@ -1,4 +1,2 @@
-fb2k_vk_com_api
-===============
-
-Framework for calling vk.com api methods from foobar2000 sdk
+Framework for calling vk.com api methods from foobar2000 sdk.
+For example of usage see foo_vk_uploader project.

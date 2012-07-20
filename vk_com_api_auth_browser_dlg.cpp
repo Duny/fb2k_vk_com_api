@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "vk_com_api.h"
 
 
@@ -18,13 +18,34 @@ namespace
 
 namespace vk_com_api
 {
+    browser_dialog::browser_dialog (const char * p_title,
+                                    const char * p_url,
+                                    const on_navigate_complete_callback & p_callback)
+        : m_title (p_title),
+          m_inital_location (p_url),
+          m_callback (p_callback)
+    {}
+
+
+    void browser_dialog::show ()
+    {
+        DoModal (core_api::get_main_window ());
+    } 
+
+    void browser_dialog::navigate (const char * url)
+    {
+        m_current_location.reset ();
+        if (m_wb2)
+            m_wb2->Navigate (CComBSTR (url), nullptr, nullptr, nullptr, nullptr);
+    }
+
     void browser_dialog::on_init_dialog ()
     {
         DlgResize_Init (true, false);
         g_dlg_pos.AddWindow (*this);
 
         // Query IWebBrowser2 interface
-        CAxWindow ie = GetDlgItem (IDC_IE);
+        CAxWindow ie = GetDlgItem (IDC_VK_COM_API_LOGIN_DLG_IE_CTRL);
         if (ie.IsWindow () != TRUE || ie.QueryControl (&m_wb2) != S_OK)
             close ();
         else {
