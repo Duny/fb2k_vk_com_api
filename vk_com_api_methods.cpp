@@ -1,4 +1,4 @@
-﻿#include "StdAfx.h"
+﻿#include "stdafx.h"
 #include "vk_com_api.h"
 
 namespace vk_com_api
@@ -60,7 +60,7 @@ namespace vk_com_api
 
     void audio::get_upload_server::run (abort_callback & p_abort)
     {
-        response_json_ptr result = vk_com_api::get_provider ()->invoke ("audio.getUploadServer", p_abort);
+        const response_json_ptr result = vk_com_api::get_provider ()->invoke ("audio.getUploadServer", p_abort);
         if (result->isMember ("upload_url"))
             m_url = result["upload_url"].asCString ();
         else
@@ -122,25 +122,88 @@ namespace vk_com_api
         }
     }
 
-    void audio::edit::run (abort_callback & p_abort)
+    void audio::get_count::run (abort_callback & p_abort)
     {
         using namespace boost::assign;
 
-        static_api_ptr_t<titleformat_compiler> p_compiler;
-        service_ptr_t<titleformat_object> p_object;
-        p_compiler->compile (p_object, "%artist%||%title%");
+        const response_json_ptr response = vk_com_api::get_provider ()->invoke ("audio.getCount", url_parameters ("oid", pfc::string_formatter () << oid), p_abort);
+    }
 
-        pfc::string8 str;
-        m_track->format_title (nullptr, str, p_object, &titleformat_text_filter_nontext_chars ());
-        auto sep_pos = str.find_first ("||");
+    audio::get::get (
+        t_vk_user_id        p_uid,
+        t_vk_group_id       p_gid,
+        t_vk_album_id       p_album_id,
+        const pfc::string & p_aids,
+        t_size              p_count,
+        t_size              p_offset) :
 
-        vk_com_api::get_provider ()->invoke ("audio.edit", 
-            list_of<name_value_pair> 
-                ("aid", pfc::string_formatter () << m_aid)
-                ("oid", get_auth_manager ()->get_user_id ())
-                ("artist", pfc::string_part (str.get_ptr (), sep_pos))
-                ("title", pfc::string_part (str.get_ptr () + sep_pos + 2, str.get_length () - sep_pos - 2)),
-            p_abort);
+        uid                 (p_uid),
+        gid                 (p_gid),
+        album_id            (p_album_id),
+        aids                (p_aids),
+        need_user           (0),
+        count               (p_count),
+        offset              (p_offset)
+    {}
+
+    void audio::get::run (abort_callback & p_abort)
+    {
+        using namespace boost::assign;
+
+        url_parameters params;
+
+        if (uid != 0 && uid != pfc_infinite)
+            params.push_back (std::make_pair ("uid", pfc::format_uint (uid)));
+        if (gid != 0 && gid != pfc_infinite)
+            params.push_back (std::make_pair ("gid", pfc::format_uint (gid)));
+        if (album_id != 0 && album_id != pfc_infinite)
+            params.push_back (std::make_pair ("album_id", pfc::format_uint (album_id)));
+        if (aids.get_length () != 0)
+            params.push_back (std::make_pair ("aids", aids.get_ptr ()));
+        if (need_user)
+            params.push_back (std::make_pair ("need_user", "1"));
+        if (count != 0 && count != pfc_infinite)
+            params.push_back (std::make_pair ("count", pfc::format_uint (count)));
+        if (offset != 0 && offset != pfc_infinite)
+            params.push_back (std::make_pair ("offset", pfc::format_uint (offset)));
+
+        const response_json_ptr response = vk_com_api::get_provider ()->invoke ("audio.get", params, p_abort);
+
+        if (!response->isArray ())
+            throw pfc::exception ("Unexpected response from audio.get (response is not an array)");
+
+
+        const auto required_fields = list_of ("aid")("owner_id")("artist")("title")("duration")("url");
+        const std::vector<std::string> vec_field_names (required_fields.begin (), required_fields.end ());
+
+        for (t_size n = response->size (), i = 0; i < n; ++i)
+        {
+            const Json::Value & track_info_object = response[i];
+
+            if (!track_info_object.isObject ())
+                throw pfc::exception ("Unexpected response from audio.get (track info is not an object)");
+
+            if (includes_all_names (track_info_object, required_fields))
+            {
+                this->add_item (audio_track_info (
+                    track_info_object["aid"].asUInt (),
+                    track_info_object["owner_id"].asInt64 (),
+                    track_info_object["artist"].asCString (),
+                    track_info_object["title"].asCString (),
+                    track_info_object["duration"].asUInt (),
+                    track_info_object["url"].asCString ())
+                );
+            }
+            else
+            {                
+                pfc::string_formatter err_mgs = "Not enough parameters in response from audio.get. Expected fields: \n";
+                std::for_each (vec_field_names.cbegin (), vec_field_names.cend (), [&] (const std::string & field) {
+                    err_mgs << "(" << field.c_str () << ")";
+                });
+                err_mgs << "\nGot:\n" << track_info_object.toStyledString ().c_str ();
+                throw pfc::exception (err_mgs);
+            }
+        }
     }
 
     void wall::post::run (abort_callback & p_abort)

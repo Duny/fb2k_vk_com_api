@@ -83,7 +83,7 @@ namespace vk_com_api
                 if (m_call_count == 0) {
                     if ((m_last_call_time - m_first_call_time) < 1000) {
                         t_uint32 period = 1100 - (m_last_call_time - m_first_call_time);
-                        console::formatter () << "sleeping " << period << " ms";
+                        //console::formatter () << "sleeping " << period << " ms";
                         m_invoker_avaliable.set_state (false);
                         Sleep (period);
                         m_invoker_avaliable.set_state (true);
@@ -122,7 +122,7 @@ namespace vk_com_api
         }
 
         DWORD m_first_call_time; // time then was made first call
-        DWORD m_last_call_time; // time of the most resent call
+        DWORD m_last_call_time; // time of the most recent call
         t_size m_call_count; // number of calls made since m_first_call_time
         critical_section m_section;
 

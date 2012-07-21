@@ -10,7 +10,7 @@ namespace vk_com_api
         FB2K_MAKE_SERVICE_INTERFACE_ENTRYPOINT(vk_auth_manager)
     public:
         // True if use had logged in and session does not expired
-        virtual bool is_valid () const = 0;
+        virtual bool user_logged () const = 0;
         // All this functions may throw exception_aborted then user cancels authorization (by pressing "Cancel" button in dialog)
         virtual const pfc::string_base & get_user_id () = 0;
         virtual const pfc::string_base & get_access_token () = 0;
@@ -19,4 +19,10 @@ namespace vk_com_api
     };
 
     typedef static_api_ptr_t<vk_com_api::vk_auth_manager> get_auth_manager;
+
+    // Helpers
+    inline t_uint32 get_user_id_as_uint32 ()
+    {
+        return static_cast<t_uint32>(pfc::atoui_ex (get_auth_manager ()->get_user_id (), pfc_infinite));
+    }
 }

@@ -48,13 +48,14 @@ namespace vk_com_api
     class auth_manager_impl : public vk_auth_manager
     {
         // vk_auth_manager overrides
-        bool is_valid () const override
+        bool user_logged () const override
         { 
             if (m_auth_data.get<field_user_id>().is_empty () || m_auth_data.get<field_access_token>().is_empty ())
                 return false;
 
             if (m_auth_data.get<field_expires_in>() > 0 &&
-                (time (nullptr) > (m_auth_data.get<field_timestamp>() + m_auth_data.get<field_expires_in>()))) return false;
+                (time (nullptr) > (m_auth_data.get<field_timestamp>() + m_auth_data.get<field_expires_in>())))
+                return false;
 
             return true;
         }
@@ -95,7 +96,7 @@ namespace vk_com_api
         // Helpers
         void check_auth_data ()
         {
-            if (!is_valid ()) get_auth_data ();
+            if (!user_logged ()) get_auth_data ();
         }
 
         void get_auth_data ()

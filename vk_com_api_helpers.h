@@ -26,10 +26,28 @@ namespace vk_com_api
 {
     typedef t_uint32 t_vk_album_id;
     typedef t_uint32 t_vk_audio_id;
+    typedef t_uint32 t_vk_user_id;
+    typedef t_uint32 t_vk_group_id;
 
     // used for storing information about user albums
     // first field is the title of album, second is id
-    typedef boost::tuples::tuple<pfc::string8, t_vk_album_id> audio_album_info;
+    typedef boost::tuples::tuple<pfc::string8 /*title*/, 
+                                 t_vk_album_id>
+        audio_album_info;
+
+    enum { f_aa_info_title, f_aa_info_audio_id };
+
+
+    // information about user audio track
+    typedef boost::tuples::tuple<t_vk_audio_id, 
+                                 __int64      /*owner_id*/,
+                                 pfc::string8 /*artist*/,
+                                 pfc::string8 /*title*/,
+                                 t_size       /*duration*/,
+                                 pfc::string8 /*url*/> 
+        audio_track_info;
+
+    enum { f_at_info_id, f_at_info_owner_id, f_at_info_artist, f_at_info_title, f_at_info_duration, f_at_info_url };
 
 
     class response_json_ptr
@@ -87,7 +105,7 @@ namespace vk_com_api
         Json::Value* operator-> () { assert_valid (); return &(*m_val); }
         const Json::Value* operator-> () const { return &(*m_val); }
 
-        bool has_members (const std::vector<const char*> & names)
+        bool has_members (const std::vector<const char*> & names) const
         {
             for (auto iter = names.cbegin (), end = names.cend (); iter != end; ++iter)
                 if (!m_val->isMember (*iter))
@@ -96,6 +114,7 @@ namespace vk_com_api
         }
     };
 
+    bool includes_all_names (const Json::Value & json_val, const std::vector<std::string> & names);
 
     // Represents a list of name=>value string pairs of URL parameters
     // (http://wwww.vk.com/?name1=value1&name2=value2&..)
@@ -105,9 +124,11 @@ namespace vk_com_api
     class url_parameters : public t_url_parameters
     {
     public:
-        url_parameters () {}
+        explicit url_parameters () {}
 
         explicit url_parameters (const pfc::string_base & p_url);
+
+        explicit url_parameters (const pfc::string8 & p_name, const pfc::string8 & p_value);
 
         bool includes_all_of (const std::vector<const char*> & p_names);
 

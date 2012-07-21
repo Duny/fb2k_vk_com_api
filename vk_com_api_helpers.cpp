@@ -23,6 +23,11 @@ namespace vk_com_api
         }
     }
 
+    url_parameters::url_parameters (const pfc::string8 & p_name, const pfc::string8 & p_value)
+    {
+        push_back (std::make_pair (p_name, p_value));
+    }
+
     // Helper : 
     // returns predicate (function) to be used with std::find_if algorithm
     template<class T>
@@ -52,5 +57,26 @@ namespace vk_com_api
             return empty;
         }
         return it->second;
+    }
+
+    bool includes_all_names (const Json::Value & json_val, const std::vector<std::string> & names)
+    {
+        if (!json_val.isObject ())
+            return false;
+
+        const auto member_names = json_val.getMemberNames ();
+
+        auto i1 = member_names.cbegin (), e1 = member_names.cend ();
+        auto i2 = names.cbegin (), e2 = names.cend ();
+
+        for (; i2 != e2; ++i2)
+        {
+            auto pos = std::find_if (i1, e1, [&] (const std::string & s) {
+                return pfc::stringCompareCaseInsensitive (s.c_str (), (*i2).c_str ()) == 0;
+            });
+            if (pos == e1)
+                return false;
+        }
+        return true;
     }
 }

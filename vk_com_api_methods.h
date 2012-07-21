@@ -1,5 +1,9 @@
 #pragma once
 
+// List of all api methods :
+// http://vkontakte.ru/developers.php?o=-1&p=%D0%9E%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5_%D0%BC%D0%B5%D1%82%D0%BE%D0%B4%D0%BE%D0%B2_API&s=0
+
+
 namespace vk_com_api
 {
     class NOVTABLE api_method_base
@@ -116,15 +120,40 @@ namespace vk_com_api
             t_vk_audio_id get_id () const { return m_id; }
         };
 
-        // Edits artist/title fields of the track m_id
-        class edit : public api_method_base
+        // Returns user track count
+        class get_count : public api_method_base
+        {
+            t_uint32 count;
+            t_int64 oid;
+            void run (abort_callback & p_abort) override;
+        public:
+            // owner_id > 0 for filter by user_id,
+            // otherwise filter by group_id (-gid)
+            get_count (t_int64 owner_id) : count (0), oid (owner_id) {}
+
+            operator t_uint32 () const { return count; }
+        };
+
+        // Returns user track list
+        class get : public api_method_base,
+                    public pfc::list_t<audio_track_info>
         {
             void run (abort_callback & p_abort) override;
-            metadb_handle_ptr m_track;
-            t_vk_audio_id m_aid;
+
+            const t_vk_user_id  uid;
+            const t_vk_group_id gid;
+            const t_vk_album_id album_id;
+            const pfc::string   aids; // comma separated list of t_vk_user_id's for filter with uid or gid
+            const t_size        need_user; // if 1 then server will return user info
+            const t_size        count;
+            const t_size        offset;
         public:
-            // Answer from vk.com server returned after file was upload
-            edit (const metadb_handle_ptr & p_track, t_vk_audio_id aid) : m_track (p_track), m_aid (aid) {}
+            get (t_vk_user_id        p_uid      = pfc_infinite,
+                 t_vk_group_id       p_gid      = pfc_infinite,
+                 t_vk_album_id       p_album_id = pfc_infinite,
+                 const pfc::string & p_aids     = "",
+                 t_size              p_count    = pfc_infinite,
+                 t_size              p_offset   = pfc_infinite);
         };
 
     } // namespace audio
