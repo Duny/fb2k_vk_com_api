@@ -85,16 +85,14 @@ namespace vk_com_api
         using namespace boost::assign;
 
         const auto required_fields = list_of ("server")("audio")("hash");
+        const std::vector<std::string> vec_field_names (required_fields.begin (), required_fields.end ());
         
-        if (m_result.has_members (required_fields)) {
-
+        if (includes_all_names (*m_result, vec_field_names))
+        {
             url_parameters params;
-            std::for_each (required_fields.begin (), required_fields.end (),
-                [&] (const char * field)
-                {
+            std::for_each (required_fields.begin (), required_fields.end (), [&] (const char * field) {
                     params.push_back (std::make_pair (field, m_result[field].asCString ()));
-                }
-            );
+                });
 
             if (!m_artist.is_empty () && !m_title.is_empty ())
             {
@@ -109,14 +107,12 @@ namespace vk_com_api
             else
                 throw pfc::exception ("no 'aid' field in response from audio.save");
         }
-        else {
+        else
+        {
             pfc::string_formatter err_mgs = "Not enough parameters in response from file upload. Expected fields: \n";
-            std::for_each (required_fields.begin (), required_fields.end (),
-                [&] (const char * field)
-                {
+            std::for_each (required_fields.begin (), required_fields.end (), [&] (const char * field) {
                     err_mgs << "(" << field << ")";
-                }
-            );
+                });
             err_mgs << "\nGot:\n" << m_result->toStyledString ().c_str ();
             throw pfc::exception (err_mgs);
         }
@@ -124,9 +120,10 @@ namespace vk_com_api
 
     void audio::get_count::run (abort_callback & p_abort)
     {
-        using namespace boost::assign;
-
         const response_json_ptr response = vk_com_api::get_provider ()->invoke ("audio.getCount", url_parameters ("oid", pfc::string_formatter () << oid), p_abort);
+
+        if (!response->isNull ())
+            count = pfc::atoui_ex (response->asCString (), pfc_infinite);
     }
 
     audio::get::get (
@@ -191,8 +188,7 @@ namespace vk_com_api
                     track_info_object["artist"].asCString (),
                     track_info_object["title"].asCString (),
                     track_info_object["duration"].asUInt (),
-                    track_info_object["url"].asCString ())
-                );
+                    track_info_object["url"].asCString ()));
             }
             else
             {                
