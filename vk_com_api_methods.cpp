@@ -91,7 +91,25 @@ namespace vk_com_api
         {
             url_parameters params;
             std::for_each (required_fields.begin (), required_fields.end (), [&] (const char * field) {
-                    params.push_back (std::make_pair (field, m_result[field].asCString ()));
+                    pfc::string_formatter f;
+                    switch(m_result[field].type())
+                    {
+                    case Json::intValue:
+                        f << m_result[field].asInt();
+                        break;
+                    case Json::uintValue:
+                        f << m_result[field].asUInt();
+                        break;
+                    case Json::realValue:
+                        f << m_result[field].asFloat();
+                        break;
+                    case Json::stringValue:
+                        f << m_result[field].asCString();
+                        break;
+                    default:
+                        throw std::runtime_error("audio::save::run. Unknown json field type.");
+                    }
+                    params.push_back (std::make_pair (field, f.get_ptr()));
                 });
 
             if (!m_artist.is_empty () && !m_title.is_empty ())
